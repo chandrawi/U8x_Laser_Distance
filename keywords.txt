@@ -1,0 +1,49 @@
+#######################################
+# Syntax Coloring Map For U8xLaser
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+U8x	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+end	KEYWORD2
+reset	KEYWORD2
+sleep	KEYWORD2
+wake	KEYWORD2
+
+status	KEYWORD2
+inputVoltage	KEYWORD2
+hardwareVersion	KEYWORD2
+softwareVersion	KEYWORD2
+serialNumber	KEYWORD2
+getAddress	KEYWORD2
+setAddress	KEYWORD2
+getOffset	KEYWORD2
+setOffset	KEYWORD2
+
+measureResult	KEYWORD2
+measureSingle	KEYWORD2
+measureSingleSlow	KEYWORD2
+measureSingleFast	KEYWORD2
+startMeasure	KEYWORD2
+startMeasureSlow	KEYWORD2
+startMeasureFast	KEYWORD2
+stopMeasure	KEYWORD2
+getSignalQuality	KEYWORD2
+laserOn	KEYWORD2
+laserOff	KEYWORD2
+
+sendFrame	KEYWORD2
+receiveFrame	KEYWORD2
+checksum	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
