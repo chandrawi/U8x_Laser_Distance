@@ -1,12 +1,13 @@
 #include <U8xLaser.h>
+#define PWREN_PIN PA15
 
-HardwareSerial SerialU8x(PB_7, PB_6);
-U8xLaser U81(SerialU8x, PA_15);
+HardwareSerial SerialU8x(PB7, PB6);
+U8xLaser U8x(SerialU8x, PWREN_PIN);
 
 void setup() {
-  // Begin U81 sensor and Serial
-  U81.begin(115200);
-  SerialUSB.begin();
+  // Begin U8x sensor and Serial
+  U8x.begin(115200);
+  Serial.begin(115200);
 
   // Send read serial number command
   U8xFrame_t frame;
@@ -14,13 +15,13 @@ void setup() {
   frame.regH = U8X_REG_SER_NUM >> 8;
   frame.regL = U8X_REG_SER_NUM;
   frame.size = 0;
-  U81.sendFrame(&frame);
+  U8x.sendFrame(&frame);
   // Receive response containing serial number
-  if (U81.receiveFrame(&frame)) {
+  if (U8x.receiveFrame(&frame)) {
     uint32_t serNum = (frame.payload[0] << 24) | (frame.payload[1] << 16) | (frame.payload[2] << 8) | frame.payload[3];
     // Print serial number
-    SerialUSB.print("Serial Number: 0x");
-    SerialUSB.println(serNum, HEX);
+    Serial.print("Serial Number: 0x");
+    Serial.println(serNum, HEX);
   }
 }
 
@@ -34,23 +35,23 @@ void loop() {
   frame.size = 1;
   frame.payload[0] = 0x00;
   frame.payload[1] = 0x01;
-  U81.sendFrame(&frame);
+  U8x.sendFrame(&frame);
 
   // Receive response containing measurement result and print it to serial
-  if (U81.receiveFrame(&frame, U8X_TIMEOUT_MEA_SLOW)) {
-    SerialUSB.print(U8X_HEAD, HEX); SerialUSB.print(" ");
-    SerialUSB.print(frame.addr, HEX); SerialUSB.print(" ");
-    SerialUSB.print(frame.regH, HEX); SerialUSB.print(" ");
-    SerialUSB.print(frame.regL, HEX); SerialUSB.print(" ");
-    SerialUSB.print(0x00, HEX); SerialUSB.print(" ");
-    SerialUSB.print(frame.size, HEX); SerialUSB.print(" ");
+  if (U8x.receiveFrame(&frame, U8X_TIMEOUT_MEA_SLOW)) {
+    Serial.print(U8X_HEAD, HEX); Serial.print(" ");
+    Serial.print(frame.addr, HEX); Serial.print(" ");
+    Serial.print(frame.regH, HEX); Serial.print(" ");
+    Serial.print(frame.regL, HEX); Serial.print(" ");
+    Serial.print(0x00, HEX); Serial.print(" ");
+    Serial.print(frame.size, HEX); Serial.print(" ");
     for (uint8_t i=0; i<(frame.size*2); i++) {
-      SerialUSB.print(frame.payload[i], HEX); SerialUSB.print(" ");
+      Serial.print(frame.payload[i], HEX); Serial.print(" ");
     }
     // Calculate received response checksum
-    uint8_t checksum = U81.checksum(&frame);
-    SerialUSB.print(checksum, HEX);
-    SerialUSB.println();
+    uint8_t checksum = U8x.checksum(&frame);
+    Serial.print(checksum, HEX);
+    Serial.println();
   }
 
   delay(2000);
