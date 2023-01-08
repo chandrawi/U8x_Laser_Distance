@@ -67,6 +67,9 @@ class U8xLaser
 
         void begin(uint32_t baud=U8X_BAUD_RATE);
         void end();
+        void reset();
+        void sleep();
+        void wake();
 
         uint16_t status();
         uint16_t inputVoltage();

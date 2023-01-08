@@ -43,6 +43,25 @@ void U8xLaser::end()
     _serial->end();
 }
 
+void U8xLaser::reset()
+{
+    digitalWrite(_reset, LOW);
+    delay(1);
+    digitalWrite(_reset, HIGH);
+}
+
+void U8xLaser::sleep()
+{
+    if (_pwrEn > -1) digitalWrite(_pwrEn, LOW);
+}
+
+void U8xLaser::wake()
+{
+    if (_pwrEn > -1) digitalWrite(_pwrEn, HIGH);
+    delay(100);
+    _serial->write(U8X_AUTO_BAUD_RATE);
+}
+
 uint16_t U8xLaser::status()
 {
     _frame.addr = 0x80 | _address;
