@@ -97,6 +97,99 @@ uint32_t U8xLaser::serialNumber()
     return (_frame.payload[0] << 24) | (_frame.payload[1] << 16) | (_frame.payload[2] << 8) | _frame.payload[3];
 }
 
+int32_t U8xLaser::measureResult()
+{
+    _frame.addr = 0x80 | _address;
+    _frame.regH = U8X_REG_MEA_RESULT >> 8;
+    _frame.regL = U8X_REG_MEA_RESULT;
+    _frame.size = 0;
+    sendFrame(&_frame);
+    receiveFrame(&_frame, U8X_TIMEOUT_MEA_SLOW);
+    _signal_quality = (_frame.payload[4] << 8) + _frame.payload[5];
+    return (_frame.payload[0] << 24) | (_frame.payload[1] << 16) | (_frame.payload[2] << 8) | _frame.payload[3];
+}
+
+int32_t U8xLaser::measureSingle()
+{
+    _startMeasure(0x00);
+    receiveFrame(&_frame, U8X_TIMEOUT_MEA_SLOW);
+    _signal_quality = (_frame.payload[4] << 8) + _frame.payload[5];
+    return (_frame.payload[0] << 24) | (_frame.payload[1] << 16) | (_frame.payload[2] << 8) | _frame.payload[3];
+}
+
+int32_t U8xLaser::measureSingleSlow()
+{
+    _startMeasure(0x01);
+    receiveFrame(&_frame, U8X_TIMEOUT_MEA_SLOW);
+    _signal_quality = (_frame.payload[4] << 8) + _frame.payload[5];
+    return (_frame.payload[0] << 24) | (_frame.payload[1] << 16) | (_frame.payload[2] << 8) | _frame.payload[3];
+}
+
+int32_t U8xLaser::measureSingleFast()
+{
+    _startMeasure(0x02);
+    receiveFrame(&_frame, U8X_TIMEOUT_MEA_FAST);
+    _signal_quality = (_frame.payload[4] << 8) + _frame.payload[5];
+    return (_frame.payload[0] << 24) | (_frame.payload[1] << 16) | (_frame.payload[2] << 8) | _frame.payload[3];
+}
+
+void U8xLaser::startMeasure()
+{
+    _startMeasure(0x04);
+}
+
+void U8xLaser::startMeasureSlow()
+{
+    _startMeasure(0x05);
+}
+
+void U8xLaser::startMeasureFast()
+{
+    _startMeasure(0x06);
+}
+
+void U8xLaser::stopMeasure()
+{
+    _serial->write(U8X_STOP_MEASURE);
+}
+
+uint16_t U8xLaser::getSignalQuality()
+{
+    return _signal_quality;
+}
+
+void U8xLaser::laserOn()
+{
+    _laserControl(0x01);
+}
+
+void U8xLaser::laserOff()
+{
+    _laserControl(0x00);
+}
+
+void U8xLaser::_startMeasure(uint8_t measureType)
+{
+    _frame.addr = _address;
+    _frame.regH = U8X_REG_MEA_START >> 8;
+    _frame.regL = U8X_REG_MEA_START;
+    _frame.size = 1;
+    _frame.payload[0] = 0x00;
+    _frame.payload[1] = measureType;
+    sendFrame(&_frame);
+}
+
+void U8xLaser::_laserControl(uint8_t on_off)
+{
+    _frame.addr = _address;
+    _frame.regH = U8X_REG_CTRL_LD >> 8;
+    _frame.regL = U8X_REG_CTRL_LD;
+    _frame.size = 1;
+    _frame.payload[0] = 0x00;
+    _frame.payload[1] = on_off;
+    sendFrame(&_frame);
+}
+
 void U8xLaser::sendFrame(U8xFrame_t* frame)
 {
     // Send head, address and register

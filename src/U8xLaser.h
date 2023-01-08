@@ -74,16 +74,32 @@ class U8xLaser
         uint16_t softwareVersion();
         uint32_t serialNumber();
 
+        int32_t measureResult();
+        int32_t measureSingle();
+        int32_t measureSingleSlow();
+        int32_t measureSingleFast();
+        void startMeasure();
+        void startMeasureSlow();
+        void startMeasureFast();
+        void stopMeasure();
+        uint16_t getSignalQuality();
+        void laserOn();
+        void laserOff();
+
         void sendFrame(U8xFrame_t* frame);
         bool receiveFrame(U8xFrame_t* frame, uint32_t timeout=U8X_TIMEOUT_CMD);
         uint8_t checksum(U8xFrame_t* frame);
 
     private:
 
+        void _startMeasure(uint8_t measureType);
+        void _laserControl(uint8_t on_off);
+
         U8xFrame_t _frame;
         HardwareSerial* _serial;
         int8_t _pwrEn, _reset;
         uint8_t _address;
+        uint16_t _signal_quality;
 };
 
 #endif
