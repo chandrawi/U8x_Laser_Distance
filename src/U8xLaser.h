@@ -48,6 +48,14 @@
 #define U8X_TIMEOUT_MEA_SLOW        5000
 #define U8X_MAX_PAYLOAD             6
 
+typedef struct {
+    uint8_t addr;
+    uint8_t regH;
+    uint8_t regL;
+    uint8_t size;
+    uint8_t payload[U8X_MAX_PAYLOAD];
+} U8xFrame_t;
+
 class U8xLaser
 {
     public:
@@ -57,10 +65,19 @@ class U8xLaser
 #endif
         U8xLaser(HardwareSerial& serial, int8_t pwrEn=-1, int8_t reset=-1);
 
+        void begin(uint32_t baud=U8X_BAUD_RATE);
+        void end();
+
+        void sendFrame(U8xFrame_t* frame);
+        bool receiveFrame(U8xFrame_t* frame, uint32_t timeout=U8X_TIMEOUT_CMD);
+        uint8_t checksum(U8xFrame_t* frame);
+
     private:
 
+        U8xFrame_t _frame;
         HardwareSerial* _serial;
         int8_t _pwrEn, _reset;
+        uint8_t _address;
 };
 
 #endif
