@@ -42,6 +42,61 @@ void U8xLaser::end()
     _serial->end();
 }
 
+uint16_t U8xLaser::status()
+{
+    _frame.addr = 0x80 | _address;
+    _frame.regH = U8X_REG_ERR_CODE >> 8;
+    _frame.regL = U8X_REG_ERR_CODE;
+    _frame.size = 0;
+    sendFrame(&_frame);
+    receiveFrame(&_frame);
+    return (_frame.payload[0] << 8) | _frame.payload[1];
+}
+
+uint16_t U8xLaser::inputVoltage()
+{
+    _frame.addr = 0x80 | _address;
+    _frame.regH = U8X_REG_BAT_VLTG >> 8;
+    _frame.regL = U8X_REG_BAT_VLTG;
+    _frame.size = 0;
+    sendFrame(&_frame);
+    receiveFrame(&_frame);
+    return (_frame.payload[0] << 8) | _frame.payload[1];
+}
+
+uint16_t U8xLaser::hardwareVersion()
+{
+    _frame.addr = 0x80 | _address;
+    _frame.regH = U8X_REG_HW_VER >> 8;
+    _frame.regL = U8X_REG_HW_VER;
+    _frame.size = 0;
+    sendFrame(&_frame);
+    receiveFrame(&_frame);
+    return (_frame.payload[0] << 8) | _frame.payload[1];
+}
+
+uint16_t U8xLaser::softwareVersion()
+{
+    _frame.addr = 0x80 | _address;
+    _frame.regH = U8X_REG_SW_VER >> 8;
+    _frame.regL = U8X_REG_SW_VER;
+    _frame.size = 0;
+    sendFrame(&_frame);
+    receiveFrame(&_frame);
+    return (_frame.payload[0] << 8) | _frame.payload[1];
+}
+
+uint32_t U8xLaser::serialNumber()
+{
+    _frame.addr = 0x80 | _address;
+    _frame.regH = U8X_REG_SER_NUM >> 8;
+    _frame.regL = U8X_REG_SER_NUM;
+    _frame.size = 0;
+    sendFrame(&_frame);
+    receiveFrame(&_frame);
+    return (_frame.payload[0] << 24) | (_frame.payload[1] << 16) | (_frame.payload[2] << 8) | _frame.payload[3];
+}
+
 void U8xLaser::sendFrame(U8xFrame_t* frame)
 {
     // Send head, address and register

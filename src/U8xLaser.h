@@ -68,6 +68,12 @@ class U8xLaser
         void begin(uint32_t baud=U8X_BAUD_RATE);
         void end();
 
+        uint16_t status();
+        uint16_t inputVoltage();
+        uint16_t hardwareVersion();
+        uint16_t softwareVersion();
+        uint32_t serialNumber();
+
         void sendFrame(U8xFrame_t* frame);
         bool receiveFrame(U8xFrame_t* frame, uint32_t timeout=U8X_TIMEOUT_CMD);
         uint8_t checksum(U8xFrame_t* frame);
