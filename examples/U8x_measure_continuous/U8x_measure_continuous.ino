@@ -6,16 +6,15 @@
 SoftwareSerial SerialSoft(2, 3);
 
 // Create U8x instance on a multiple serial port microcontroller like STM32
-// HardwareSerial SerialU8x(PB_7, PB_6);
-// U8xLaser U81(SerialU8x, PA_15);
+// HardwareSerial SerialU8x(PB7, PB6);
+// U8xLaser U81(SerialU8x, PWREN_PIN);
 // Create U8x instance with default HardwareSerial instance
 U8xLaser U81(PWREN_PIN);
 
 void setup() {
   // Begin U81 sensor and Serial
-  U81.begin(115200);
+  U81.begin(19200);
   SerialSoft.begin(9600);
-  delay(10000);
 
   // Show hardware and software version and serial number
   SerialSoft.print("Hardware Version: ");
