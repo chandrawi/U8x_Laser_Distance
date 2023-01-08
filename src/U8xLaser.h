@@ -73,6 +73,10 @@ class U8xLaser
         uint16_t hardwareVersion();
         uint16_t softwareVersion();
         uint32_t serialNumber();
+        uint8_t getAddress();
+        bool setAddress(uint8_t address);
+        uint32_t getOffset();
+        bool setOffset(int16_t offset);
 
         int32_t measureResult();
         int32_t measureSingle();
@@ -99,6 +103,7 @@ class U8xLaser
         HardwareSerial* _serial;
         int8_t _pwrEn, _reset;
         uint8_t _address;
+        int16_t _offset;
         uint16_t _signal_quality;
 };
 

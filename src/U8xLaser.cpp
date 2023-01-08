@@ -13,6 +13,7 @@ U8xLaser::U8xLaser(HardwareSerial& serial, int8_t pwrEn, int8_t reset)
     _pwrEn = pwrEn;
     _reset = reset;
     _address = 0;
+    _offset = 0;
 }
 
 void U8xLaser::begin(uint32_t baud)
@@ -95,6 +96,48 @@ uint32_t U8xLaser::serialNumber()
     sendFrame(&_frame);
     receiveFrame(&_frame);
     return (_frame.payload[0] << 24) | (_frame.payload[1] << 16) | (_frame.payload[2] << 8) | _frame.payload[3];
+}
+
+uint8_t U8xLaser::getAddress()
+{
+    return _address;
+}
+
+bool U8xLaser::setAddress(uint8_t address)
+{
+    _frame.addr = _address;
+    _frame.regH = U8X_REG_ADDRESS >> 8;
+    _frame.regL = U8X_REG_ADDRESS;
+    _frame.size = 1;
+    _frame.payload[0] = 0x00;
+    _frame.payload[1] = 0x7F & address;
+    sendFrame(&_frame);
+    if (receiveFrame(&_frame) && _frame.regL == U8X_REG_ADDRESS) {
+        _address = 0x7F & address;
+        return true;
+    }
+    return false;
+}
+
+uint32_t U8xLaser::getOffset()
+{
+    return _offset;
+}
+
+bool U8xLaser::setOffset(int16_t offset)
+{
+    _frame.addr = _address;
+    _frame.regH = U8X_REG_OFFSET >> 8;
+    _frame.regL = U8X_REG_OFFSET;
+    _frame.size = 1;
+    _frame.payload[0] = offset >> 8;
+    _frame.payload[1] = offset & 0xFF;
+    sendFrame(&_frame);
+    if (receiveFrame(&_frame) && _frame.regL == U8X_REG_OFFSET) {
+        _offset = offset;
+        return true;
+    }
+    return false;
 }
 
 int32_t U8xLaser::measureResult()
