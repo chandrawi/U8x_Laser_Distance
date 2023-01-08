@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <HardwareSerial.h>
+#include <SoftwareSerial.h>
 
 #define U8X_HEAD                    0xAA
 #define U8X_HEAD_ERROR              0xEE
@@ -42,7 +43,7 @@
 #define U8X_AUTO_BAUD_RATE          0x55
 #define U8X_STOP_MEASURE            0x58
 
-#define U8X_BAUD_RATE               119200
+#define U8X_BAUD_RATE               19200
 #define U8X_TIMEOUT_CMD             100
 #define U8X_TIMEOUT_MEA_FAST        1000
 #define U8X_TIMEOUT_MEA_SLOW        5000
@@ -64,6 +65,7 @@ class U8xLaser
         U8xLaser(int8_t pwrEn=-1, int8_t reset=-1);
 #endif
         U8xLaser(HardwareSerial& serial, int8_t pwrEn=-1, int8_t reset=-1);
+        U8xLaser(SoftwareSerial& serial, int8_t pwrEn=-1, int8_t reset=-1);
 
         void begin(uint32_t baud=U8X_BAUD_RATE);
         void end();
@@ -103,7 +105,9 @@ class U8xLaser
         void _laserControl(uint8_t on_off);
 
         U8xFrame_t _frame;
-        HardwareSerial* _serial;
+        Stream* _serial;
+        HardwareSerial* _serialHard;
+        SoftwareSerial* _serialSoft;
         int8_t _pwrEn, _reset;
         uint8_t _address;
         int16_t _offset;

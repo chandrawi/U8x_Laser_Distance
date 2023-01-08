@@ -10,6 +10,19 @@ U8xLaser::U8xLaser(int8_t pwrEn, int8_t reset)
 U8xLaser::U8xLaser(HardwareSerial& serial, int8_t pwrEn, int8_t reset)
 {
     _serial = &serial;
+    _serialHard = &serial;
+    _serialSoft = nullptr;
+    _pwrEn = pwrEn;
+    _reset = reset;
+    _address = 0;
+    _offset = 0;
+}
+
+U8xLaser::U8xLaser(SoftwareSerial& serial, int8_t pwrEn, int8_t reset)
+{
+    _serial = &serial;
+    _serialHard = nullptr;
+    _serialSoft = &serial;
     _pwrEn = pwrEn;
     _reset = reset;
     _address = 0;
@@ -25,7 +38,8 @@ void U8xLaser::begin(uint32_t baud)
     if (_reset > -1) {
         pinMode(_reset, OUTPUT);
     }
-    _serial->begin(baud);
+    // Begin serial communication based on serial type used
+    _serialHard == nullptr ? _serialSoft->begin(baud) : _serialHard->begin(baud);
     // Send auto baudrate command
     delay(100);
     _serial->write(U8X_AUTO_BAUD_RATE);
@@ -40,7 +54,8 @@ void U8xLaser::begin(uint32_t baud)
 void U8xLaser::end()
 {
     if (_pwrEn > -1) digitalWrite(_pwrEn, LOW);
-    _serial->end();
+    // End serial communication based on serial type used
+    _serialHard == nullptr ? _serialSoft->end() : _serialHard->end();
 }
 
 void U8xLaser::reset()
@@ -261,7 +276,7 @@ void U8xLaser::sendFrame(U8xFrame_t* frame)
     _serial->write(frame->regL);
     // Only send payload and payload count if payload count > 0
     if (frame->size > 0) {
-        _serial->write(0x00);
+        _serial->write((uint8_t) 0x00);
         _serial->write(frame->size);
         for (uint8_t i=0; i<(frame->size*2); i++) {
             _serial->write(frame->payload[i]);
@@ -269,6 +284,7 @@ void U8xLaser::sendFrame(U8xFrame_t* frame)
     }
     // Send calculated checksum
     _serial->write(checksum(frame));
+    _serial->flush();
 }
 
 bool U8xLaser::receiveFrame(U8xFrame_t* frame, uint32_t timeout)
