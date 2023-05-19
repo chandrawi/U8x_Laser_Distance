@@ -5,7 +5,7 @@
 
 # U8 Series Laser Distance Sensor
 
-Arduino library for U8 series laser distance sensor. U8 series is an accurate LIDAR (ligth detection and ranging) sensor module with +/- 1 mm accuracy from JRT Meter Technology. This library support for U81x and other laser sensor module from JRT using UART interface.
+Arduino library for U8 series laser distance sensor. U8 series is an accurate LIDAR (ligth detection and ranging) sensor module with +/- 1 mm accuracy from JRT Meter Technology. This library support for U81x and other laser sensor module from JRT using U(S)ART interface.
 
 ## Installation
 

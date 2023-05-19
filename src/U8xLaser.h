@@ -61,7 +61,7 @@ class U8xLaser
 {
     public:
 
-#if defined(Serial)
+#if defined(HAVE_HWSERIAL0) || (defined(Serial) && !defined(ENABLE_SERIALUSB))
         U8xLaser(int8_t pwrEn=-1, int8_t reset=-1);
 #endif
         U8xLaser(HardwareSerial& serial, int8_t pwrEn=-1, int8_t reset=-1);

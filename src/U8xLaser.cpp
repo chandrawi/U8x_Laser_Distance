@@ -1,6 +1,6 @@
 #include <U8xLaser.h>
 
-#if defined(Serial)
+#if defined(HAVE_HWSERIAL0) || (defined(Serial) && !defined(ENABLE_SERIALUSB))
 U8xLaser::U8xLaser(int8_t pwrEn, int8_t reset)
 {
     U8xLaser(Serial, pwrEn, reset);
